@@ -1,8 +1,12 @@
 Features in this branch:
 
-Endpoints and methods are links/bookmarkable
+Bookmarks
+---------
+Endpoints and methods are now links. When the url entered is a linked item, that item will be expanded upon page load.
+
 Search
-Configuration files can be split-up and do not have to be located in '/public/data/'
+------
+Whatever term is typed into the search box, that term will be searched for in the json configuration file; API names (endpoint names) are not included in the search [probably something that should be changed].
 
 
 Split Configuration
@@ -11,20 +15,20 @@ This function was developed with the assumption that the starting input
 would be the main api file, which would look like the following:
 
 ```js
-    { "endpoints":
-        [...]
-    }
+{ "endpoints":
+    [...]
+}
 ```
 
 The include statement syntax looks like this:
 
 ```js
-    {
-        "external": {
-            "href": "./public/data/desired/data.json",
-            "type": "list"
-        }
+{
+    "external": {
+        "href": "./public/data/desired/data.json",
+        "type": "list"
     }
+}
 ```
 
 "type": "list" is used only when the contents of the file to be included is a list object 
@@ -86,90 +90,91 @@ A few new types are introduced specifically for content parameters.
 
 Here is an example api that shows usage of all of these new types. 
 
-    {
-        "endpoints": [
-            {
-                "name": "Testing API",
-                "methods": [
-                    {
-                        "MethodName": "Modify an application",
-                        "Synopsis": "Modify a single application | stub",
-                        "HTTPMethod": "PUT",
-                        "URI": "/application/:app_id",
-                        "RequiresOAuth": "N",
-                        "content": {
-                            "schema":{"type":"string"},
-                            "contentType":["application/json","application/xml"],
-                            "parameters": [
-                                {
-                                    "Name": "scan_schedule",
-                                    "Required": "N",
-                                    "Type": "object",
-                                    "Description": "| stub",
-                                    "parameters": [
-                                        {
-                                            "Name": "specs",
-                                            "Required": "N",
-                                            "Default": "",
-                                            "Type": "collection",
-                                            "Description": "",
-                                            "parameters": [
-                                                {
-                                                    "Name": "type",
-                                                    "Required": "N",
-                                                    "Default": "",
-                                                    "Type": "string",
-                                                    "Description": ""
-                                                },
-                                                {
-                                                    "Name": "cron_spec",
-                                                    "Required": "N",
-                                                    "Default": "",
-                                                    "Type": "string",
-                                                    "Description": ""
-                                                },
-                                                {
-                                                    "Name": "duration",
-                                                    "Required": "N",
-                                                    "Default": "",
-                                                    "Type": "integer",
-                                                    "Description": "The unit of measure is 'seconds'."
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "Name": "exclude_dirs",
-                                            "Required": "N",
-                                            "Type": "list",
-                                            "Description": "List of directories to be excluded. | stub",
-                                            "parameters": [
-                                                {
-                                                    "Required": "N",
-                                                    "Type": "string"
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
+```js
+{
+    "endpoints": [
+        {
+            "name": "Testing API",
+            "methods": [
+                {
+                    "MethodName": "Modify an application",
+                    "Synopsis": "Modify a single application | stub",
+                    "HTTPMethod": "PUT",
+                    "URI": "/application/:app_id",
+                    "RequiresOAuth": "N",
+                    "content": {
+                        "schema":{"type":"string"},
+                        "contentType":["application/json","application/xml"],
                         "parameters": [
                             {
-                                "Name": "app_id",
-                                "Required": "Y",
-                                "Type": "integer",
-                                "Description": "Application id of application to be modified. | stub"
-                            }                 
+                                "Name": "scan_schedule",
+                                "Required": "N",
+                                "Type": "object",
+                                "Description": "| stub",
+                                "parameters": [
+                                    {
+                                        "Name": "specs",
+                                        "Required": "N",
+                                        "Default": "",
+                                        "Type": "collection",
+                                        "Description": "",
+                                        "parameters": [
+                                            {
+                                                "Name": "type",
+                                                "Required": "N",
+                                                "Default": "",
+                                                "Type": "string",
+                                                "Description": ""
+                                            },
+                                            {
+                                                "Name": "cron_spec",
+                                                "Required": "N",
+                                                "Default": "",
+                                                "Type": "string",
+                                                "Description": ""
+                                            },
+                                            {
+                                                "Name": "duration",
+                                                "Required": "N",
+                                                "Default": "",
+                                                "Type": "integer",
+                                                "Description": "The unit of measure is 'seconds'."
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "Name": "exclude_dirs",
+                                        "Required": "N",
+                                        "Type": "list",
+                                        "Description": "List of directories to be excluded. | stub",
+                                        "parameters": [
+                                            {
+                                                "Required": "N",
+                                                "Type": "string"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
                         ]
-                    }                         
-                ]                             
-            }                                 
-        ]
-    }    
+                    },
+                    "parameters": [
+                        {
+                            "Name": "app_id",
+                            "Required": "Y",
+                            "Type": "integer",
+                            "Description": "Application id of application to be modified. | stub"
+                        }                 
+                    ]
+                }                         
+            ]                             
+        }                                 
+    ]
+}    
+```
 
 
 
-````````````````````````````````````````````````````````````````````````````````
 I/O Docs - Open Source in Node.js
 =================================
 Copyright 2012 Mashery, Inc.
