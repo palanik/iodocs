@@ -1,3 +1,175 @@
+Features in this branch:
+
+Endpoints and methods are links/bookmarkable
+Search
+Configuration files can be split-up and do not have to be located in '/public/data/'
+
+
+Split Configuration
+-------------------
+This function was developed with the assumption that the starting input
+would be the main api file, which would look like the following:
+
+```js
+    { "endpoints":
+        [...]
+    }
+```
+
+The include statement syntax looks like this:
+
+```js
+    {
+        "external": {
+            "href": "./public/data/desired/data.json",
+            "type": "list"
+        }
+    }
+```
+
+"type": "list" is used only when the contents of the file to be included is a list object 
+that will be merged into an existing list. 
+An example would be storing all the get methods for an endpoint as a list of objects in 
+an external file.
+
+Imports must be referenced relative to the installation directory.
+
+
+getData expects the api name, and an optional path.
+The optional path may be a full uri, or a relative uri.
+If it is a relative uri, it will be joined to the path given in the api
+config. 
+If given only the api name, the function will check for a 'href' attribute
+in the config file, and assume that a file called api-name.json exists at
+that location. If the 'href' attribute is not present in the api config,
+the function will use the fallback location of __dirname + '/public/data' +
+api-name + '.json', and return the parsed file from there.
+
+Ex. - If we have the following line in the 'linkedin' api config:
+    "href": "file:///user/home/"
+and call the function like so:
+    return getData("linkedin");
+The function will attempt "require('/user/home/linkedin.json')" and return
+the results if the file exists. If the file does not exist, IODocs will
+crash.
+
+(keeping the previous example in mind)
+If the function is called in the following manner:
+    getData("linkedin", "./linkedin/new-api.json")
+The function will use the base directory provided by the linkedin config
+(file:///user/home/) and join the relative path provided. This path will
+then attempted to be opened using require and the results returned.
+
+In a similar manner, if one does not want to use a relative path, but 
+a full path, that can be done as well.
+    getData("linkedin", "file:///user/tmp/test-api.json")
+The given full path will be opened and the data returned.
+
+Future functionality:
+    { "href": "http://www.example.com/foo.json" }
+The function would return the parsed JSON data from foo.json, dealing
+with file retrieval from the web.
+
+PUT and POST content body
+=========================
+### Replaces jQuery 1.6 with jQuery 1.9.0
+Content parameters show what can be entered for POST and PUT methods. When a method's parameters are filled out, the method's corresponding text area will show what the JSON form would look like.
+
+*Note*: Perhaps there's a better term than 'content parameters', but I do not know it. I call them such as they appear under the word 'Content' in the display, and in the 'content' block in the api description file.
+
+*Note 2*: 'content' and 'contentType' are two variables introduced in this fork by @dgc-wh to be able to send the content body as part of PUT and POST requests. 'content' replaces the 'requestBody' variable.
+
+A few new types are introduced specifically for content parameters.
+* collection - a list of objects belonging to a property. eg - "collection" : [{ "prop": "val", "prop2": "val2" }, { "prop3": "val3", "prop4": "val4" }]
+* object - a set of properties and values belonging to a single property. eg. - "obj" : { "prop": "val", "prop2": "val2" }
+* list - a list of values belonging to a property. eg. - "list" : [ "val", "val2", "val3" ]
+
+Here is an example api that shows usage of all of these new types. 
+
+    {
+        "endpoints": [
+            {
+                "name": "Testing API",
+                "methods": [
+                    {
+                        "MethodName": "Modify an application",
+                        "Synopsis": "Modify a single application | stub",
+                        "HTTPMethod": "PUT",
+                        "URI": "/application/:app_id",
+                        "RequiresOAuth": "N",
+                        "content": {
+                            "schema":{"type":"string"},
+                            "contentType":["application/json","application/xml"],
+                            "parameters": [
+                                {
+                                    "Name": "scan_schedule",
+                                    "Required": "N",
+                                    "Type": "object",
+                                    "Description": "| stub",
+                                    "parameters": [
+                                        {
+                                            "Name": "specs",
+                                            "Required": "N",
+                                            "Default": "",
+                                            "Type": "collection",
+                                            "Description": "",
+                                            "parameters": [
+                                                {
+                                                    "Name": "type",
+                                                    "Required": "N",
+                                                    "Default": "",
+                                                    "Type": "string",
+                                                    "Description": ""
+                                                },
+                                                {
+                                                    "Name": "cron_spec",
+                                                    "Required": "N",
+                                                    "Default": "",
+                                                    "Type": "string",
+                                                    "Description": ""
+                                                },
+                                                {
+                                                    "Name": "duration",
+                                                    "Required": "N",
+                                                    "Default": "",
+                                                    "Type": "integer",
+                                                    "Description": "The unit of measure is 'seconds'."
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "Name": "exclude_dirs",
+                                            "Required": "N",
+                                            "Type": "list",
+                                            "Description": "List of directories to be excluded. | stub",
+                                            "parameters": [
+                                                {
+                                                    "Required": "N",
+                                                    "Type": "string"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        "parameters": [
+                            {
+                                "Name": "app_id",
+                                "Required": "Y",
+                                "Type": "integer",
+                                "Description": "Application id of application to be modified. | stub"
+                            }                 
+                        ]
+                    }                         
+                ]                             
+            }                                 
+        ]
+    }    
+
+
+
+````````````````````````````````````````````````````````````````````````````````
 I/O Docs - Open Source in Node.js
 =================================
 Copyright 2012 Mashery, Inc.
