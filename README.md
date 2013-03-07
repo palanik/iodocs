@@ -1,4 +1,5 @@
-Features in this branch:
+Features introduced  in this branch:
+====================================
 
 Bookmarks
 ---------
@@ -7,7 +8,6 @@ Endpoints and methods are now links. When the url entered is a linked item, that
 Search
 ------
 Whatever term is typed into the search box, that term will be searched for in the json configuration file; API names (endpoint names) are not included in the search [probably something that should be changed].
-
 
 Split Configuration
 -------------------
@@ -25,8 +25,16 @@ The include statement syntax looks like this:
 ```js
 {
     "external": {
-        "href": "./public/data/desired/data.json",
+        "href": "./api_name/data.json",
         "type": "list"
+    }
+}
+```
+
+```js
+{
+    "external": {
+        "href": "file:///user/home/api.json",
     }
 }
 ```
@@ -36,38 +44,36 @@ that will be merged into an existing list.
 An example would be storing all the get methods for an endpoint as a list of objects in 
 an external file.
 
-Imports must be referenced relative to the installation directory.
 
+API Description Anywhere
+------------------------
+If one has a sufficiently large API that splitting it up would make it more
+manageable, perhaps it would be nice to have the API description stored in a
+seperate repository, and imported as a sub-module. (To my knowledge) git 
+sub-modules can only exist in the top level directory of a project.
 
-getData expects the api name, and an optional path.
-The optional path may be a full uri, or a relative uri.
-If it is a relative uri, it will be joined to the path given in the api
-config. 
-If given only the api name, the function will check for a 'href' attribute
-in the config file, and assume that a file called api-name.json exists at
-that location. If the 'href' attribute is not present in the api config,
-the function will use the fallback location of __dirname + '/public/data' +
-api-name + '.json', and return the parsed file from there.
+This feature allows you to define where to look for an API description file,
+beyond the default location of '/public/data/' in the IODocs installation 
+directory.
 
-Ex. - If we have the following line in the 'linkedin' api config:
-    "href": "file:///user/home/"
-and call the function like so:
-    return getData("linkedin");
-The function will attempt "require('/user/home/linkedin.json')" and return
-the results if the file exists. If the file does not exist, IODocs will
-crash.
+Example configuration:
+```js
+"requestbin": {
+    "name": "Requestb.in",
+    "protocol": "http",
+    "baseURL": "requestb.in",
+    "publicPath": "/",
+    "href": "file:///user/home/api/"
+}
+```
+Given the above configuration, when looking for the API description file,
+instead of looking in 'IODocs/public/data/', it will look in '/user/home/api'.
+This works well with the split configuration feature. If the 'href' property
+is not defined in the config file, the default location of 'IODocs/public/data/'
+will be used instead.
 
-(keeping the previous example in mind)
-If the function is called in the following manner:
-    getData("linkedin", "./linkedin/new-api.json")
-The function will use the base directory provided by the linkedin config
-(file:///user/home/) and join the relative path provided. This path will
-then attempted to be opened using require and the results returned.
-
-In a similar manner, if one does not want to use a relative path, but 
-a full path, that can be done as well.
-    getData("linkedin", "file:///user/tmp/test-api.json")
-The given full path will be opened and the data returned.
+This feature is currently only setup for files on disk, but could be adapted to
+using descriptions located on the web as well.
 
 Future functionality:
     { "href": "http://www.example.com/foo.json" }
