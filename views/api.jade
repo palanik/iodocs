@@ -8,14 +8,11 @@ h1=apiInfo.name
 form#credentials
     input(type='hidden', name='apiName', value=apiName)
     - if (apiInfo.auth) 
-        section(class='credentials ' + authed)
+        section(class=' ' + authed)
          - if (authed && apiInfo.oauth)
              span Authenticated with OAuth
              img(src='/images/accept.png')
          - else
-             h2 API Credentials
-               img(src='/images/key.png')
-
              - if (apiInfo.oauth)
                  input(type='hidden', name='oauth', value='authrequired')
 
@@ -33,20 +30,13 @@ form#credentials
              - else
                  - var defaultServer =''
              div
-                 label(for='key') API Key
-                 input(id='key', name='key', value=defaultKey, style='color=#EEEEEE')
-             div
-                label(for='altserverinfo') Alternate server
-                input(id='altserverinfo', name='altserverinfo', value=defaultServer, style='color=#EEEEEE')
-             div
                  - if (apiInfo.oauth || apiInfo.signature)
                      label(for='secret') Shared Secret
                      input(id='secret', name='secret', value=defaultSecret, style='color=#EEEEEE')
              - if (apiInfo.oauth && apiInfo.oauth.type !='two-legged')
                  div
                     input(name='oauth', value='Authenticate with OAuth', type='submit', id='oauth-auth')
-
-br
+hr
 div
     form#searchForm
         label(for='search1') Search&nbsp;
