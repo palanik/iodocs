@@ -1,4 +1,14 @@
 (function() {
+    // When user clicks on a PUT or POST bar, populate the text area with
+    // existing non-empty fields.
+    $('li.method.post, li.method.put').on('click', function(event) {
+        console.log('post method click');
+
+        var table = $(this).children('form').children('div.content').children('table.parameters');
+        var snapshotObject = handleTable(table); 
+        updateTextArea( table, snapshotObject );
+    });
+
     // On click or data entry/change in content parameters, this block will capture
     // the event and things will happen, dominos will fall, and pigs will fly.
     $('.content').find('td.parameter').on( "change click keyup", "input, select", function(event) {
