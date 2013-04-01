@@ -20,18 +20,14 @@
                     var uiItem = $( "<li>" )
                         .addClass('ui-autocomplete-category')
                         .text(item.category + " | Methods matched: " + matchedMethodCount ) 
-                        .click(
-                            // on hover
-                            function (event) {
+                        .click( function (event) {
                                 console.log('overing over something!');
                                 console.log(item.category);
                                 $(this).nextUntil('.ui-autocomplete-category').slideToggle();
-                            }
-                            //// on hoverOut
-                            //function (event) {
-                            //    $(this).nextUntil('.ui-autocomplete-category').hide();
-                            //}
-                        );
+                        })
+                        .hover(function () {
+                            $(this).css('cursor', 'pointer');
+                        });
                     //ul.append( "<li class='ui-autocomplete-category'>" + item.category + " | Methods matched: " + matchedMethodCount + "</li>" );
                     ul.append(uiItem);
                     currentCategory = item.category;
