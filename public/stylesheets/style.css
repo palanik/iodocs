@@ -820,6 +820,7 @@ dd {
     padding: .2em .4em;
     margin: .8em 0 .2em;
     line-height: 1.5;
+    /*z-index: 10;*/
 }
 
 /* Used to hide endpoints and methods that do not match for a given search */
@@ -840,7 +841,7 @@ div.clickable a {
     top:0;
     left:0;
     text-decoration:none; /* Makes sure the link   doesn't get underlined */
-    z-index:10; /* raises anchor tag above everything else in div */
+    /* z-index:9; raises anchor tag above everything else in div */
     background-color:white; /*workaround to make clickable in IE */
     opacity: 0; /*workaround to make clickable in IE */
     filter: alpha(opacity=1); /*workaround to make clickable in IE */

@@ -874,7 +874,7 @@ function search (jsonData, searchTerm) {
         // Iterate through methods
         for (var j = 0; j < object.methods.length; j++) {
             if ( filterSearchObject(object.methods[j], regex) ) {
-                searchMatches.push({"label":object.methods[j]['MethodName'], "category": object.name});
+                searchMatches.push({"label":object.methods[j]['MethodName'], "category": object.name, "type":object.methods[j]['HTTPMethod']});
             }
         }
     }

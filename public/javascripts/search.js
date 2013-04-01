@@ -1,5 +1,6 @@
 (function() {
     var searchResults;
+    var maxItems = 20;
     $.widget( "custom.catcomplete", $.ui.autocomplete, {
         _renderMenu: function( ul, items ) {
             //console.log(items);
@@ -7,12 +8,64 @@
             var that = this,
                 currentCategory = "";
             $.each( items, function( index, item ) {
+                // Determining the count of methods matched for an endpoint here
+                // is probably poor for performance. Worry about it later.
+                var matchedMethodCount = 0;
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].category === item.category) {
+                        matchedMethodCount++;
+                    }
+                }
                 if ( item.category != currentCategory ) {
-                    ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+                    var uiItem = $( "<li>" )
+                        .addClass('ui-autocomplete-category')
+                        .text(item.category + " | Methods matched: " + matchedMethodCount ) 
+                        .click(
+                            // on hover
+                            function (event) {
+                                console.log('overing over something!');
+                                console.log(item.category);
+                                $(this).nextUntil('.ui-autocomplete-category').slideToggle();
+                            }
+                            //// on hoverOut
+                            //function (event) {
+                            //    $(this).nextUntil('.ui-autocomplete-category').hide();
+                            //}
+                        );
+                    //ul.append( "<li class='ui-autocomplete-category'>" + item.category + " | Methods matched: " + matchedMethodCount + "</li>" );
+                    ul.append(uiItem);
                     currentCategory = item.category;
                 }
-                that._renderItemData( ul, item );
+                that._renderItem( ul, item, items.length );
             });
+        },
+        _renderItem: function ( ul, item, count ) {
+            var link = "#"+(item.category + '-' + item.type + '-' + item.label).replace(/\s/g, '-');
+            var testreturn = $( "<li>" )
+                    .append( $( "<a href=" + link +">" ).text( item.label ))
+                    .addClass(item.type.toLowerCase())
+                    .click( function () {
+                        if (/PUT|POST|GET|DELETE/.test(link)){
+                            // Opens up a particular method.
+                            var div_node = $('div.clickable').has('a[href="'+link+'"]');
+                            div_node.closest('li.endpoint').children('ul.methods').slideToggle();
+                            div_node.closest('li.endpoint').toggleClass('expanded');
+                            div_node.siblings('form').slideToggle();
+                        }
+                        else {
+                            // Opens up an endpoint.
+                            var span_node = $('span.name').has('a[href="'+link+'"]');
+                            span_node.closest('li.endpoint').children('ul.methods').slideToggle();
+                            span_node.closest('li.endpoint').toggleClass('expanded');
+                        }
+                    })
+                    .appendTo( ul );
+            if (count > maxItems) {
+                  return testreturn.css('display', 'none');
+            }
+            else {
+                  return testreturn;
+            }
         }
     });
 
@@ -47,7 +100,7 @@
 
                     // Toggle endpoint
                     $('ul.methods', this.parentNode.parentNode).slideToggle();
-                    $(this.parentNode.parentNode).toggleClass('expanded')
+                    $(this.parentNode.parentNode).toggleClass('expanded');
                 }
             });
         }
