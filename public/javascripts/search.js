@@ -25,9 +25,17 @@
                                 console.log(item.category);
                                 $(this).nextUntil('.ui-autocomplete-category').slideToggle();
                         })
-                        .hover(function () {
-                            $(this).css('cursor', 'pointer');
-                        });
+                        .hover(
+                            // hoverOn
+                            function () {
+                                $(this).css('cursor', 'pointer');
+                                $(this).css('text-decoration', 'underline');
+                            },
+                            // hoverOut
+                            function () {
+                                $(this).css('text-decoration', 'none');
+                            }
+                        );
                     //ul.append( "<li class='ui-autocomplete-category'>" + item.category + " | Methods matched: " + matchedMethodCount + "</li>" );
                     ul.append(uiItem);
                     currentCategory = item.category;
