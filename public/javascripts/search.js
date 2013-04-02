@@ -21,8 +21,6 @@
                         .addClass('ui-autocomplete-category')
                         .text(item.category + " | Methods matched: " + matchedMethodCount ) 
                         .click( function (event) {
-                                console.log('overing over something!');
-                                console.log(item.category);
                                 $(this).nextUntil('.ui-autocomplete-category').slideToggle();
                         })
                         .hover(
@@ -36,7 +34,6 @@
                                 $(this).css('text-decoration', 'none');
                             }
                         );
-                    //ul.append( "<li class='ui-autocomplete-category'>" + item.category + " | Methods matched: " + matchedMethodCount + "</li>" );
                     ul.append(uiItem);
                     currentCategory = item.category;
                 }
@@ -44,11 +41,12 @@
             });
         },
         _renderItem: function ( ul, item, count ) {
+            var that = this;
             var link = "#"+(item.category + '-' + item.type + '-' + item.label).replace(/\s/g, '-');
             var testreturn = $( "<li>" )
                     .append( $( "<a href=" + link +">" ).text( item.label ))
                     .addClass(item.type.toLowerCase())
-                    .click( function () {
+                    .click( function (event) {
                         if (/PUT|POST|GET|DELETE/.test(link)){
                             // Opens up a particular method.
                             var div_node = $('div.clickable').has('a[href="'+link+'"]');
@@ -62,6 +60,8 @@
                             span_node.closest('li.endpoint').children('ul.methods').slideToggle();
                             span_node.closest('li.endpoint').toggleClass('expanded');
                         }
+                        that.close(event);
+                        event.preventDefault();
                     })
                     .appendTo( ul );
             if (count > maxItems) {
