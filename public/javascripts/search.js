@@ -50,16 +50,16 @@
                         if (/PUT|POST|GET|DELETE/.test(link)){
                             // Opens up a particular method.
                             var div_node = $('div.clickable').has('a[href="'+link+'"]');
-                            div_node.closest('li.endpoint').children('ul.methods').slideToggle();
-                            div_node.closest('li.endpoint').toggleClass('expanded');
+                            if (div_node.closest('li.endpoint').hasClass('expanded')) {
+                                // do nothing
+                            }
+                            else {
+                                div_node.closest('li.endpoint').toggleClass('expanded');
+                                div_node.closest('li.endpoint').children('ul.methods').slideToggle();
+                            }
                             div_node.siblings('form').slideToggle();
                         }
-                        else {
-                            // Opens up an endpoint.
-                            var span_node = $('span.name').has('a[href="'+link+'"]');
-                            span_node.closest('li.endpoint').children('ul.methods').slideToggle();
-                            span_node.closest('li.endpoint').toggleClass('expanded');
-                        }
+                        // Close the search results box after a method has been clicked on.
                         that.close(event);
                         event.preventDefault();
                     })
