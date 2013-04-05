@@ -534,13 +534,22 @@ function processRequest(req, res, next) {
 
         // Add API Key to params, if any.
         if (apiKey != '' && apiKey != 'undefined' && apiKey != undefined) {
-            if (options.path.indexOf('?') !== -1) {
-                options.path += '&';
-            }
-            else {
-                options.path += '?';
-            }
-            options.path += apiConfig.keyParam + '=' + apiKey;
+		
+			var regx = new RegExp(':' + apiConfig.keyParam);
+
+			// If the keyParam is actually a part of the URL, put it in the URL
+			if (!!regx.test(options.path)) {
+				options.path = options.path.replace(regx, apiKey);
+			}
+			else {
+				if (options.path.indexOf('?') !== -1) {
+					options.path += '&';
+				}
+				else {
+					options.path += '?';
+				}
+				options.path += apiConfig.keyParam + '=' + apiKey;
+			}
         }
 
         // Perform signature routine, if any.
